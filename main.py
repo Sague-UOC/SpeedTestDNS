@@ -1,4 +1,5 @@
 # --- MENÚ PRINCIPAL ---
+from funciones.comprobacion_ip import menu_comprobacion_ip
 
 def menu_principal():
 
@@ -7,7 +8,7 @@ def menu_principal():
 
     # bucle principal del menú con salida cuando el usuario ingresa "0"
     while opcion != "0":
-        print("----------- MENÚ PRINCIPAL -----------")
+        print("\n----------- MENÚ PRINCIPAL -----------")
         print("1. Comprobación de IP")
         print("2. Información de MAC")
         print("3. Configuración de Red")
@@ -18,7 +19,7 @@ def menu_principal():
 
         # llama a la función correspondiente según la opción seleccionada
         if opcion == "1":
-            print("comprobación de IP")
+            menu_comprobacion_ip()
         elif opcion == "2":
             print("información de MAC")
         elif opcion == "3":
