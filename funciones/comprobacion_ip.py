@@ -5,3 +5,4 @@ texto se preguntarán al usuario e inicialmente se mostrará el contenido de est
 Finalmente lanzará un ping para cada una de las IP’s y determinará e informará sobre cuáles de 
 las anteriores responden afirmativamente a este comando. 
 '''
+
