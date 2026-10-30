@@ -5,6 +5,8 @@ texto se preguntarán al usuario e inicialmente se mostrará el contenido de est
 Finalmente lanzará un ping para cada una de las IP’s y determinará e informará sobre cuáles de 
 las anteriores responden afirmativamente a este comando. 
 '''
+import subprocess
+from ipaddress import IPv4Address
 from pathlib import Path
 
 def obtener_ruta(nombre, ubi):
@@ -21,6 +23,57 @@ def guarda_ip_lista(archivo):
             ip_list.append(ip)
 
     return ip_list
+
+def comprobar_ping_ip(ip_list):
+     # está funcion ejecuta un ping por cada ip que haya en la lista (ip_list)
+     # vamos a tener en cuenta que vamos a trabajar con IPv4 así que debemos importar IPv4Address
+     # también vamos a utilizar subprocess.run() --> esto nos va a permitir ejecutar un programa, esperar a que termine y obtener sus resultados
+
+     # comprobamos que la list no esté vacía
+     if not ip_list:
+        print("No hay direcciones para comprobar")
+        return
+
+     # procedemos a ejecutar los ping de todas las ip y mostrar los resultados
+
+     print("\n--- RESULTADOS DE LOS PINGS ---")
+
+     for ip in ip_list:
+        try:
+            # comprobación de que la ip és válida
+            IPv4Address(ip)
+
+            # ejecución y almacenamiento de la salida de los pings
+            resultado = subprocess.run(
+               ["ping", "-4", "-n", "1", "-w", "1000", ip], # (-4 --> IPv4) (-n 1 --> envía 1 petición) (-w 1000 --> espera 1000 milisegundos para una respuesta)
+               capture_output= True,
+               text= True,
+               timeout= 5 # le ponemos un tiempo máximo de ejecución al subprocess
+            )
+
+        # añadimos el control de errores con los except
+        except ValueError:
+            print(f"{ip} dirección IPv4 no válida")
+
+        except subprocess.TimeoutExpired:
+            print(f"{ip} el comando superó el tiempo límite")
+
+        except OSError as error:
+            print(f"No se ha podido ejecutar ping: {error}")
+            return
+
+        else:
+            # comprobamos que ip responden al ping y cuales no
+            responde = (
+                resultado.returncode == 0 and "ttl=" in resultado.stdout.lower() # utilizamos el .returncode para ver si el código con el que ha terminado es = 0, y el stdout para ver el texto que ha mostrado en el comando
+            )
+
+            if responde:
+                print(f"{ip} responde al ping")
+
+            else:
+                print(f"{ip} sin respuesta positiva")
+
 
 
 def opcion1():
@@ -50,6 +103,10 @@ def opcion1():
     
                 except (UnicodeError, OSError) as error:
                         print(f"Error: No se pudo abrir el archivo {error}.")
+
+                else:
+                    print() # linea vacía para mejora visual 
+                    comprobar_ping_ip(ip_list)
 
 
 # funcion para el submenú de comprobación de IP, nos permite seleccionar un archivo y mostrar su contenido
