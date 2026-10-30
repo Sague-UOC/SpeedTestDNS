@@ -1,0 +1,4 @@
+Adaptador: Adaptador de LAN inalámbrica Wi-Fi 2
+IPv4: 192.168.1.46
+Máscara: 255.255.255.0
+Puerta de enlace: 192.168.1.1

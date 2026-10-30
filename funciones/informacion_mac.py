@@ -5,6 +5,8 @@ fecha y hora de creación.  Guardar el archivo y no borrar.
 '''
 import csv
 import subprocess
+from datetime import datetime
+from pathlib import Path
 
 def info_mac():
     # la función obtiene y muestra las MAC de los adaptadores instalados
@@ -52,3 +54,46 @@ def info_mac():
         print(f"Conexión: {conexion}")
         print(f"Adaptador: {adaptador}")
         print(f"MAC: {mac}")
+
+    # guardamos la fecha de creación del csv
+    fecha_creacion = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # guardamos el informe en la carpeta principal del proyecto
+    # en este caso será .parent.parent
+
+    carpeta_proyecto = Path(__file__).resolve().parent.parent
+    ruta_csv = carpeta_proyecto / "informacion_localSague.csv"
+
+    try:
+        with ruta_csv.open(
+            "w", # utilizamos esta config que crea el archivo si no existe, y lo reemlaza su contenidosi ya existe
+            newline= "", # nos permite que el csv.writer gestione los saltos de línea y evita filas adicionales vacías
+            encoding= "utf-8-sig"
+        ) as archivo:
+
+            # creamos el objeto que nos escribirá los datos en csv
+            escritor = csv.writer(archivo)
+
+            # escribimos la primera fila
+            escritor.writerow([
+                "fecha_creacion",
+                "conexion",
+                "adaptador",
+                "mac"
+            ])
+
+            # ahora escribimos una fila por adaptador
+            for fila in adaptadores:
+                escritor.writerow([
+                    fecha_creacion,
+                    fila[0],
+                    fila[1],
+                    fila[2]
+                ])
+
+    except OSError as error:
+        print(f"No se ha podido guardar el informe: {error}")
+
+    else:
+        print(f"\nInforme guardado en: {ruta_csv}")
+        print(f"Fecha y hora de generación: {fecha_creacion}")

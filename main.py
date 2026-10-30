@@ -1,6 +1,7 @@
 # --- MENÚ PRINCIPAL ---
 from funciones.comprobacion_ip import menu_comprobacion_ip
 from funciones.informacion_mac import info_mac
+from funciones.configuracion_red import informe_adaptador
 
 def menu_principal():
 
@@ -24,7 +25,7 @@ def menu_principal():
         elif opcion == "2":
             info_mac()
         elif opcion == "3":
-            print("configuración de red")
+            informe_adaptador()
         else:
             if opcion != "0":
                 print("Opción inválida. Por favor, seleccione una opción válida.")
